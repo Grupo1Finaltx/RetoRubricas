@@ -20,7 +20,8 @@ class Centro extends CI_Controller {
 			$datos['centros'] = $this->Centro_model->obtener_centro($datos['segmento']);
 		}
 		
-		$this->load->view('header');
+		$this->load->view('head');
+		$this->load->view('vistas_logueado/admin/admin_header');
 		$this->load->view('centro/listar_centro',$datos);
 		$this->load->view('centro/nuevo_centro');
 		$this->load->view('footer');
@@ -44,7 +45,8 @@ class Centro extends CI_Controller {
 	public function editar(){
 		$datos['segmento']=$this->uri->segment(3);
 		$datos['centros']=$this->Centro_model->obtener_centro($datos['segmento']);
-		$this->load->view('header');
+		$this->load->view('head');
+		$this->load->view('vistas_logueado/admin/admin_header');
 		$this->load->view('centro/editar_centro',$datos);
 		$this->load->view('footer');
 	}

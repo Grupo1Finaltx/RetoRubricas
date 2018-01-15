@@ -21,7 +21,8 @@ class Curso extends CI_Controller {
 			$datos['cursos'] = $this->Cursos_model->obtener_cursos($datos['segmento']);
 		}
 		
-		$this->load->view('header');
+		$this->load->view('head');
+		$this->load->view('vistas_logueado/admin/admin_header');
 		$this->load->view('curso/listar_curso',$datos);
 		$this->load->view('curso/nuevo_curso');
 		$this->load->view('footer');
@@ -47,7 +48,8 @@ class Curso extends CI_Controller {
 	public function editar(){
 		$datos['segmento']=$this->uri->segment(3);
 		$datos['cursos']=$this->Curso_model->obtener_curso($datos['segmento']);
-		$this->load->view('header');
+		$this->load->view('head');
+		$this->load->view('vistas_logueado/admin/admin_header');
 		$this->load->view('curso/editar_curso',$datos);
 		$this->load->view('footer');
 	}

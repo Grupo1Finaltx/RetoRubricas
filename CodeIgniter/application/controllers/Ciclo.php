@@ -23,8 +23,11 @@ class Ciclo extends CI_Controller {
 		}
 		$datos['centros'] = $this->Centro_model->obtener_centros();
 		$datos['cursos'] = $this->Curso_model->obtener_cursos();
+		
 
-		$this->load->view('header');
+
+		$this->load->view('head');
+		$this->load->view('vistas_logueado/admin/admin_header');
 		$this->load->view('ciclo/listar_ciclo',$datos);
 		$this->load->view('ciclo/nuevo_ciclo',$datos);
 		$this->load->view('footer');
@@ -57,7 +60,9 @@ class Ciclo extends CI_Controller {
 		$datos['ciclos']=$this->Ciclo_model->obtener_ciclo($datos['segmento']);
 		$datos['centros'] = $this->Centro_model->obtener_centros();
 		$datos['cursos'] = $this->Curso_model->obtener_cursos();
-		$this->load->view('header');
+
+		$this->load->view('head');
+		$this->load->view('vistas_logueado/admin/admin_header');
 		$this->load->view('ciclo/editar_ciclo',$datos);
 		$this->load->view('footer');
 	}
@@ -93,6 +98,8 @@ class Ciclo extends CI_Controller {
 		$datos['centros'] = $this->Centro_model->obtener_centros();
 		$datos['cursos'] = $this->Curso_model->obtener_cursos();
 
+
+		$this->load->view('head');
 		$this->load->view('header');
 		$this->load->view('ciclo/listar_ciclo',$datos);
 		$this->load->view('ciclo/nuevo_ciclo',$datos);
