@@ -1,12 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Reto_model extends CI_Model{
+class Modulo_model extends CI_Model{
 
 	function __construct(){
 		parent::__construct();
 		$this->load->database();
 	}
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -15,8 +16,70 @@ class Reto_model extends CI_Model{
 //----------------------------------------------------------------------------
 
 
-	public function obtener_retos_centro(){
-		$sql="SELECT DISTINCT r.ID_Reto, COD_Reto, DESC_Reto, DESC_Centro FROM Reto r, Reto_Modulo rm, Modulo m, Ciclo c, Centro ce WHERE r.ID_Reto=rm.ID_Reto AND rm.ID_Modulo=m.ID_Modulo AND m.ID_Ciclo=c.ID_Ciclo AND c.ID_Centro=ce.ID_Centro";
+	public function obtener_ciclos($id){
+		$sql="SELECT ID_Ciclo,COD_Ciclo,DESC_Ciclo, DESC_Centro FROM Ciclo c,Centro ce WHERE c.ID_Centro=ce.ID_Centro AND ID_Curso=$id";
+		$query = $this->db->query($sql);
+		if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+
+	public function obtener_modulos($id){
+		$this->db->where('ID_Ciclo',$id);
+		$query = $this->db->get('Modulo');
+		if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+	public function obtener_modulos_todos(){
+		$query = $this->db->get('Modulo');
+		if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+	public function obtener_modulo($id){
+		$this->db->where('ID_Modulo',$id);
+		$query = $this->db->get('Modulo');
+		if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+
+	public function obtener_cicloscentros(){
+		$sql="SELECT ID_Ciclo,COD_Ciclo,DESC_Ciclo, DESC_Centro, COD_Curso FROM Ciclo c,Centro ce, Curso cu WHERE c.ID_Centro=ce.ID_Centro AND cu.ID_Curso=c.ID_Curso";
 		$query = $this->db->query($sql);
 		if ($query->num_rows() > 0){
 			return $query;
@@ -27,40 +90,22 @@ class Reto_model extends CI_Model{
 
 
 
-	public function obtener_retos(){
-		$sql="SELECT DISTINCT r.ID_Reto,COD_Reto,DESC_Reto FROM Reto r, Reto_Modulo rm WHERE NOT r.ID_Reto IN (SELECT ID_Reto FROM Reto_Modulo)";
-		$query = $this->db->query($sql);
-		if ($query->num_rows() > 0){
-			return $query;
-		}else{
-			return false;
-		}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+
+
+	public function nuevo_modulo($datos){
+
+		$this->db->insert('Modulo', $datos);
+		redirect('Modulo');		
 	}
+	
 
-
-
-	public function obtener_reto($id){
-		$where = $this->db->where('ID_Reto',$id);
-		$query = $this->db->get('Reto');
-		if ($query->num_rows() > 0){
-			return $query;
-		}else{
-			return false;
-		}
-	}	
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-
-
-
-	public function borrar_reto($id){
-		$this->db->where('ID_Reto',$id);
-		$this->db->delete('Reto');
-	}	
 
 
 //----------------------------------------------------------------------------
@@ -70,12 +115,15 @@ class Reto_model extends CI_Model{
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-	public function nuevo_reto($datos){
 
-		$this->db->insert('Reto', $datos);
+	public function borrar_modulo($id){
+		$this->db->where('ID_Modulo',$id);
+		$this->db->delete('Modulo');
 	}
+	
 
 
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -84,14 +132,11 @@ class Reto_model extends CI_Model{
 //----------------------------------------------------------------------------
 
 
-	public function actualizar_reto($id,$datos){
-		$datosBD = array(
-			'COD_Reto' => $datos['COD_Reto'],
-			'DESC_Reto' => $datos['DESC_Reto'],
-		);
-		$this->db->where('ID_Reto',$id);
-		$this->db->update('Reto', $datosBD);
+	public function actualizar_modulo($id,$datos){
+		$this->db->where('ID_Modulo',$id);
+		$this->db->update('Modulo', $datos);
 	}
+	
 
 
 

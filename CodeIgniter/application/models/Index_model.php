@@ -1,12 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Reto_model extends CI_Model{
+class Index_model extends CI_Model{
 
 	function __construct(){
 		parent::__construct();
 		$this->load->database();
 	}
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -15,9 +16,42 @@ class Reto_model extends CI_Model{
 //----------------------------------------------------------------------------
 
 
-	public function obtener_retos_centro(){
-		$sql="SELECT DISTINCT r.ID_Reto, COD_Reto, DESC_Reto, DESC_Centro FROM Reto r, Reto_Modulo rm, Modulo m, Ciclo c, Centro ce WHERE r.ID_Reto=rm.ID_Reto AND rm.ID_Modulo=m.ID_Modulo AND m.ID_Ciclo=c.ID_Ciclo AND c.ID_Centro=ce.ID_Centro";
-		$query = $this->db->query($sql);
+	public function comprobar_login($datos){
+
+		$sql = "SELECT * FROM Usuario WHERE User = ? AND Password = ? ";
+		$query=$this->db->query($sql, array($datos['User'],$datos['Password']));
+
+
+		if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+	public function obtener_datos_logueado($datos){
+		$sql="SELECT ID_Usuario, User, Password, Nombre, Apellidos, Email, Dni, DESC_Centro,t.ID_TUsuario, DESC_TUsuario FROM Usuario u,Centro c, TUsuario t WHERE u.ID_Centro=c.ID_Centro AND u.ID_TUsuario=t.ID_TUsuario AND User='".$datos['User']."'";
+		$query=$this->db->query($sql);
+				if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+	public function obtener_retos_alumno(){
+		$sql = "SELECT DISTINCT r.ID_Reto,COD_Reto, DESC_Reto from Usuario u, Reto r, Equipo e, Equipo_Usuario eu WHERE r.ID_Reto=e.ID_Reto AND e.ID_Equipo=eu.ID_Equipo AND eu.ID_Usuario=u.ID_Usuario AND u.User= '".$this->session->userdata('User')."'";
+		$query=$this->db->query($sql);
+
 		if ($query->num_rows() > 0){
 			return $query;
 		}else{
@@ -27,9 +61,27 @@ class Reto_model extends CI_Model{
 
 
 
-	public function obtener_retos(){
-		$sql="SELECT DISTINCT r.ID_Reto,COD_Reto,DESC_Reto FROM Reto r, Reto_Modulo rm WHERE NOT r.ID_Reto IN (SELECT ID_Reto FROM Reto_Modulo)";
-		$query = $this->db->query($sql);
+	public function usuario_json($user){
+		$this->db->where('User',$user);
+		$query = $this->db->get('Usuario');
+		if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+	public function obtener_retos_profesor(){
+		$sql = "SELECT DISTINCT * FROM Reto_Modulo rm,Reto r,  Modulo m, Ciclo c WHERE ID_UAdmin='".$this->session->userdata('ID_Usuario')."' AND r.ID_Reto=rm.ID_Reto AND rm.ID_Modulo=m.ID_Modulo AND c.ID_Ciclo=m.ID_Ciclo";
+		$query=$this->db->query($sql);
+
 		if ($query->num_rows() > 0){
 			return $query;
 		}else{
@@ -38,71 +90,35 @@ class Reto_model extends CI_Model{
 	}
 
 
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
-	public function obtener_reto($id){
-		$where = $this->db->where('ID_Reto',$id);
-		$query = $this->db->get('Reto');
+	public function obtener_notas(){
+		$this->db->where('ID_Usuario',$this->session->userdata('ID_Usuario'));
+		$query = $this->db->get('Notas');
 		if ($query->num_rows() > 0){
 			return $query;
 		}else{
 			return false;
 		}
-	}	
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-
-
-
-	public function borrar_reto($id){
-		$this->db->where('ID_Reto',$id);
-		$this->db->delete('Reto');
-	}	
-
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-
-	public function nuevo_reto($datos){
-
-		$this->db->insert('Reto', $datos);
 	}
 
 
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-
-
-	public function actualizar_reto($id,$datos){
-		$datosBD = array(
-			'COD_Reto' => $datos['COD_Reto'],
-			'DESC_Reto' => $datos['DESC_Reto'],
-		);
-		$this->db->where('ID_Reto',$id);
-		$this->db->update('Reto', $datosBD);
+	public function comprobar_correo($correo){
+		$sql="SELECT * FROM Usuario WHERE Email=$correo";
+		$query = $this->db->get('Notas');
+		if ($query->num_rows() > 0){
+			return $query;
+		}else{
+			return "vacio";
+		}
 	}
 
 
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
 
 }
-
-
 ?>
