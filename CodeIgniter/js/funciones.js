@@ -18,7 +18,8 @@ document.getElementById("boton_menu").addEventListener("click", function(){
 		document.getElementById("div_derecha").style.display="block";
 	}
 	else{
-		document.getElementById("div_derecha").style.display="none";		
+		document.getElementById("div_derecha").style.display="none";
+		
 	}
 
 });
